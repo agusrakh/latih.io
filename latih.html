@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrasi dan List Pendaftar</title>
+    <!-- Tautan ke Bootstrap CSS -->
+    <style>
+      /* Style untuk tabs */
+      .nav-tabs {
+        background-color: #007bff;
+        border-radius: 5px;
+      }
+
+      .nav-tabs .nav-item .nav-link {
+        color: white;
+        font-weight: bold;
+      }
+
+      .nav-tabs .nav-item .nav-link.active {
+        background-color: white;
+        color: #007bff;
+      }
+
+      /* Style untuk form registrasi */
+      #formregis {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Style untuk tabel list pendaftar */
+      .table {
+        margin-top: 20px;
+      }
+
+      /* Style untuk tombol Submit */
+      .btn-primary {
+        background-color: #007bff;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+
+      /* Style untuk rata-rata */
+      #rata_sangu,
+      #rata_umur {
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      /* Style untuk judul halaman */
+      h2 {
+        color: #007bff;
+      }
+
+      /* Style untuk label form */
+      label {
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* Style untuk input form */
+      .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+      }
+
+      /* Style untuk tabel header */
+      .table thead {
+        background-color: #007bff;
+        color: white;
+      }
+
+      /* Style untuk tombol reset */
+      .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+      }
+
+      .btn-secondary:hover {
+        background-color: #545b62;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-4">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#registrasi"
+            >Registrasi</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#list-pendaftar"
+            >List Pendaftar</a
+          >
+        </li>
+      </ul>
+
+      <div class="tab-content mt-4">
+        <div id="registrasi" class="tab-pane fade show active">
+          <h2>Form Registrasi</h2>
+          <form id="formregis">
+            <div class="form-group">
+              <label for="nama">Nama :</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nama"
+                name="nama"
+                minlength="10"
+                required
+                placeholder="(minimal 10 karakter)"
+              />
+            </div>
+            <div class="form-group">
+              <label for="umur">Umur :</label>
+              <input
+                type="number"
+                class="form-control"
+                id="umur"
+                name="umur"
+                min="25"
+                required
+                placeholder="(minimal 25 tahun)"
+              />
+            </div>
+            <div class="form-group">
+              <label for="uang-sangu">Uang Sangu :</label>
+              <input
+                type="number"
+                class="form-control"
+                id="uang-sangu"
+                name="uang-sangu"
+                min="100000"
+                max="1000000"
+                required
+                placeholder="(minimal 100 ribu dan maksimal 1 juta)"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+
+        <div id="list-pendaftar" class="tab-pane fade">
+          <h2>List Pendaftar</h2>
+          <p>
+            Rata-rata pendaftar memiliki uang sangu sebesar
+            <span id="rata_sangu">0</span> dengan rata-rata umur
+            <span id="rata_umur">0</span>
+          </p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Umur</th>
+                <th>Uang Sangu</th>
+              </tr>
+            </thead>
+            <tbody id="daftartabel">
+              <!-- Data pendaftar akan ditambahkan di sini -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tautan ke Bootstrap JS (jQuery & Popper.js required) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      class Pendaftar {
+        constructor(nama, umur, uangSangu) {
+          this.nama = nama;
+          this.umur = umur;
+          this.uangSangu = uangSangu;
+        }
+      }
+
+      class PendaftarAtur {
+        constructor() {
+          this.datadaftar = [];
+        }
+
+        tambahPendaftar(nama, umur, uangSangu) {
+          const pendaftar = new Pendaftar(nama, umur, uangSangu);
+          this.datadaftar.push(pendaftar);
+        }
+
+        tampilData() {
+          const daftartabel = document.getElementById("daftartabel");
+          daftartabel.innerHTML = "";
+
+          for (const pendaftar of this.datadaftar) {
+            const row = daftartabel.insertRow();
+            row.innerHTML = `<td>${pendaftar.nama}</td><td>${pendaftar.umur}</td><td>${pendaftar.uangSangu}</td>`;
+          }
+        }
+
+        async rataRata() {
+          let jumlahUmur = 0;
+          let jumlahSangu = 0;
+
+          for (const pendaftar of this.datadaftar) {
+            jumlahUmur += pendaftar.umur;
+            jumlahSangu += pendaftar.uangSangu;
+          }
+
+          const rataUmur = jumlahUmur / this.datadaftar.length;
+          const rataSangu = jumlahSangu / this.datadaftar.length;
+
+          document.getElementById("rata_umur").textContent =
+            rataUmur.toFixed(2);
+          document.getElementById("rata_sangu").textContent =
+            rataSangu.toFixed(2);
+        }
+      }
+
+      const PendaftarAtur = new PendaftarAtur();
+
+      function registrasi(event) {
+        event.preventDefault();
+        const nama = document.getElementById("nama").value;
+        const umur = parseInt(document.getElementById("umur").value);
+        const uangSangu = parseInt(document.getElementById("uang-sangu").value);
+
+        if (
+          nama.length < 10 ||
+          umur < 25 ||
+          uangSangu < 100000 ||
+          uangSangu > 1000000
+        ) {
+          alert("Data tidak memenuhi kriteria!");
+          return;
+        }
+
+        asyn()
+          .then(() => {
+            PendaftarAtur.tambahPendaftar(nama, umur, uangSangu);
+            PendaftarAtur.tampilData();
+            PendaftarAtur.rataRata();
+            document.getElementById("formregis").reset();
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("Terjadi kesalahan saat mengirim data.");
+          });
+      }
+
+      function asyn() {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(); 
+          }, 1000); //Tunggu selama 1 detik sebelum menyelesaikan operasi
+        });
+      }
+
+      document
+        .getElementById("formregis")
+        .addEventListener("submit", registrasi);
+
+      // Memanggil fungsi untuk menampilkan data awal
+      PendaftarAtur.tampilData();
+      PendaftarAtur.rataRata();
+    </script>
+  </body>
+</html>
